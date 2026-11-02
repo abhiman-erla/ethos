@@ -8,6 +8,8 @@ ARG APP_VERSION=development
 ENV NODE_ENV=production \
     PORT=3000 \
     APP_VERSION=$APP_VERSION
+# The app runs with node alone, so drop package managers from the final image
+RUN rm -rf /usr/local/lib/node_modules /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack /usr/local/bin/yarn /usr/local/bin/yarnpkg /opt/yarn-*
 WORKDIR /app
 COPY --from=dependencies --chown=node:node /app/node_modules ./node_modules
 COPY --chown=node:node package.json ./
