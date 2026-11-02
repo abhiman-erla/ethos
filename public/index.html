@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Ethos release operations dashboard" />
+    <title>Ethos | Release Operations</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Ethos home">
+        <span class="brand-mark">E</span>
+        <span>ETHOS</span>
+      </a>
+      <div class="system-state"><span class="pulse"></span> Platform operational</div>
+    </header>
+
+    <main>
+      <section class="heading">
+        <div>
+          <p class="eyebrow">Release operations</p>
+          <h1>Deployment overview</h1>
+        </div>
+        <button id="open-dialog" class="primary-button" type="button">New deployment</button>
+      </section>
+
+      <section class="stats" aria-label="Release statistics">
+        <article><span>30-day deployments</span><strong id="stat-total">0</strong></article>
+        <article><span>Successful</span><strong id="stat-success">0</strong></article>
+        <article><span>Needs attention</span><strong id="stat-failed">0</strong></article>
+        <article><span>Production</span><strong id="stat-production">0</strong></article>
+      </section>
+
+      <section class="release-section">
+        <div class="section-heading">
+          <div>
+            <h2>Recent deployments</h2>
+            <p>Latest changes across environments and services.</p>
+          </div>
+          <button id="refresh" class="icon-button" type="button" title="Refresh deployments" aria-label="Refresh deployments">&#8635;</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Service</th><th>Version</th><th>Environment</th><th>Status</th><th>Owner</th><th>Created</th></tr></thead>
+            <tbody id="release-rows"><tr><td colspan="6" class="empty">Loading deployments...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="release-dialog">
+      <form id="release-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">Create record</p><h2>New deployment</h2></div>
+          <button id="close-dialog" class="icon-button" type="button" aria-label="Close dialog">&times;</button>
+        </div>
+        <label>Service<input name="service" required maxlength="80" placeholder="payments-api" /></label>
+        <label>Version<input name="version" required maxlength="80" placeholder="v1.4.2" /></label>
+        <div class="field-row">
+          <label>Environment<select name="environment"><option>development</option><option>staging</option><option>production</option></select></label>
+          <label>Status<select name="status"><option>queued</option><option>deploying</option><option>succeeded</option><option>failed</option><option>rolled_back</option></select></label>
+        </div>
+        <label>Owner<input name="owner" required maxlength="80" placeholder="platform-team" /></label>
+        <label>Commit SHA<input name="commitSha" pattern="[a-fA-F0-9]{7,40}" placeholder="a1b2c3d" /></label>
+        <label>Notes<textarea name="notes" maxlength="1000" rows="3" placeholder="Release context or rollback notes"></textarea></label>
+        <p id="form-error" class="form-error" role="alert"></p>
+        <div class="dialog-actions"><button id="cancel-dialog" type="button" class="secondary-button">Cancel</button><button class="primary-button" type="submit">Create deployment</button></div>
+      </form>
+    </dialog>
+  </body>
+</html>

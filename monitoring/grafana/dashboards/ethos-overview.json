@@ -1,0 +1,38 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Requests / minute",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+      "targets": [{ "expr": "sum(rate(ethos_http_request_duration_seconds_count[1m])) * 60", "legendFormat": "requests" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "p95 latency",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+      "targets": [{ "expr": "histogram_quantile(0.95, sum(rate(ethos_http_request_duration_seconds_bucket[5m])) by (le))", "legendFormat": "p95" }],
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] }
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP status rate",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+      "targets": [{ "expr": "sum(rate(ethos_http_request_duration_seconds_count[5m])) by (status_code)", "legendFormat": "{{status_code}}" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "Created releases",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "targets": [{ "expr": "sum(increase(ethos_releases_created_total[1h])) by (environment, status)", "legendFormat": "{{environment}} / {{status}}" }]
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["ethos", "devops"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "title": "Ethos Overview",
+  "uid": "ethos-overview",
+  "version": 1
+}

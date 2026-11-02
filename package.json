@@ -1,0 +1,25 @@
+{
+  "name": "ethos",
+  "version": "1.0.0",
+  "description": "Cloud-native release operations dashboard built as an end-to-end DevOps portfolio project.",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage",
+    "check": "node --check src/server.js && node --check src/app.js && node --check src/db.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "pg": "^8.16.3",
+    "@prometheus-io/client": "^0.16.1"
+  },
+  "devDependencies": {}
+}

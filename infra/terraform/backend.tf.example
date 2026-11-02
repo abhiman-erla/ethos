@@ -1,0 +1,10 @@
+# Rename this file to backend.tf and replace the placeholders after creating
+# a private, versioned S3 bucket for Terraform state.
+terraform {
+  backend "s3" {
+    bucket  = "YOUR-TERRAFORM-STATE-BUCKET"
+    key     = "ethos/production/terraform.tfstate"
+    region  = "us-east-1"
+    encrypt = true
+  }
+}
