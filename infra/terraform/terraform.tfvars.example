@@ -1,5 +1,5 @@
 aws_region        = "us-east-1"
-github_repository = "YOUR_GITHUB_USERNAME/ethos"
+github_repository = "abhiman-erla/ethos"
 
 # GitHub repositories using immutable OIDC subjects can provide the exact claim:
 # github_oidc_subjects = ["repo:OWNER@OWNER_ID/ethos@REPOSITORY_ID:environment:production"]

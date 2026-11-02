@@ -278,7 +278,7 @@ git init
 git add .
 git commit -m "Build Ethos cloud-native release platform"
 git branch -M main
-git remote add origin https://github.com/YOUR_GITHUB_USERNAME/ethos.git
+git remote add origin https://github.com/abhiman-erla/ethos.git
 git push -u origin main
 ```
 
@@ -295,7 +295,7 @@ cd infra/terraform
 cp terraform.tfvars.example terraform.tfvars
 ```
 
-Set `github_repository` to `YOUR_GITHUB_USERNAME/ethos`.
+Set `github_repository` to `abhiman-erla/ethos`.
 
 An AWS account can contain only one IAM OIDC provider for the GitHub URL. If one already exists, set:
 
