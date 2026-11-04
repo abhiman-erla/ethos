@@ -14,13 +14,13 @@ permissions:
 
 jobs:
   secrets-scan:
-    uses: abhiman-erla/ci-templates/.github/workflows/secret-scan.yml@11abec65f0c86a0f95e32250f9656c4cbd628b1f # v1.2.0
+    uses: abhiman-erla/ci-templates/.github/workflows/secret-scan.yml@38dc8c6d2b578d7ad8ded1467c464118dc0e1dc1 # v1.3.0
 
   workflow-lint:
-    uses: abhiman-erla/ci-templates/.github/workflows/workflow-lint.yml@11abec65f0c86a0f95e32250f9656c4cbd628b1f # v1.2.0
+    uses: abhiman-erla/ci-templates/.github/workflows/workflow-lint.yml@38dc8c6d2b578d7ad8ded1467c464118dc0e1dc1 # v1.3.0
 
   node:
-    uses: abhiman-erla/ci-templates/.github/workflows/node-ci.yml@11abec65f0c86a0f95e32250f9656c4cbd628b1f # v1.2.0
+    uses: abhiman-erla/ci-templates/.github/workflows/node-ci.yml@38dc8c6d2b578d7ad8ded1467c464118dc0e1dc1 # v1.3.0
     with:
       # engines says >=22 and the Dockerfile runs node:22.
       node-version: "22"
@@ -28,7 +28,7 @@ jobs:
       test-command: npm run test:coverage
 
   docker:
-    uses: abhiman-erla/ci-templates/.github/workflows/docker-build.yml@11abec65f0c86a0f95e32250f9656c4cbd628b1f # v1.2.0
+    uses: abhiman-erla/ci-templates/.github/workflows/docker-build.yml@38dc8c6d2b578d7ad8ded1467c464118dc0e1dc1 # v1.3.0
     permissions:
       contents: read
       packages: write
@@ -39,14 +39,12 @@ jobs:
       # /health makes no database call, but src/server.js runs the migration
       # before it listens, so the app only answers /health with a reachable
       # database. smoke-postgres starts a throwaway Postgres named db (ci/ci/ci).
-      # smoke-postgres needs ci-templates v1.3.0: this SHA moves to v1.3.0 once
-      # it is released. Until then the input is rejected by the v1.2.0 workflow.
       smoke-postgres: true
       smoke-env: |
         DATABASE_URL=postgres://ci:ci@db:5432/ci
 
   terraform:
-    uses: abhiman-erla/ci-templates/.github/workflows/terraform-validate.yml@11abec65f0c86a0f95e32250f9656c4cbd628b1f # v1.2.0
+    uses: abhiman-erla/ci-templates/.github/workflows/terraform-validate.yml@38dc8c6d2b578d7ad8ded1467c464118dc0e1dc1 # v1.3.0
     permissions:
       contents: read
     with:
