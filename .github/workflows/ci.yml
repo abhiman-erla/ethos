@@ -38,9 +38,12 @@ jobs:
       smoke-path: /health
       # /health makes no database call, but src/server.js runs the migration
       # before it listens, so the app only answers /health with a reachable
-      # database. These are dummy values and no database exists in this job.
+      # database. smoke-postgres starts a throwaway Postgres named db (ci/ci/ci).
+      # smoke-postgres needs ci-templates v1.3.0: this SHA moves to v1.3.0 once
+      # it is released. Until then the input is rejected by the v1.2.0 workflow.
+      smoke-postgres: true
       smoke-env: |
-        DATABASE_URL=postgres://smoke:smoke-not-a-secret@smoke-test.invalid:5432/smoke
+        DATABASE_URL=postgres://ci:ci@db:5432/ci
 
   terraform:
     uses: abhiman-erla/ci-templates/.github/workflows/terraform-validate.yml@11abec65f0c86a0f95e32250f9656c4cbd628b1f # v1.2.0
