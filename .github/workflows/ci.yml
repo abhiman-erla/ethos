@@ -5,60 +5,57 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  test:
-    name: Test and audit
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run check
-      - run: npm run test:coverage
-      - run: npm audit --audit-level=high
+  secrets-scan:
+    uses: abhiman-erla/ci-templates/.github/workflows/secret-scan.yml@11abec65f0c86a0f95e32250f9656c4cbd628b1f # v1.2.0
 
-  container:
-    name: Build and scan container
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
-      - uses: docker/build-push-action@v6
-        with:
-          context: .
-          load: true
-          tags: ethos:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-      - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          image-ref: ethos:${{ github.sha }}
-          format: table
-          exit-code: "1"
-          ignore-unfixed: true
-          severity: HIGH,CRITICAL
+  workflow-lint:
+    uses: abhiman-erla/ci-templates/.github/workflows/workflow-lint.yml@11abec65f0c86a0f95e32250f9656c4cbd628b1f # v1.2.0
+
+  node:
+    uses: abhiman-erla/ci-templates/.github/workflows/node-ci.yml@11abec65f0c86a0f95e32250f9656c4cbd628b1f # v1.2.0
+    with:
+      # engines says >=22 and the Dockerfile runs node:22.
+      node-version: "22"
+      lint-command: npm run check
+      test-command: npm run test:coverage
+
+  docker:
+    uses: abhiman-erla/ci-templates/.github/workflows/docker-build.yml@11abec65f0c86a0f95e32250f9656c4cbd628b1f # v1.2.0
+    permissions:
+      contents: read
+      packages: write
+    with:
+      image-name: ethos
+      smoke-port: "3000"
+      smoke-path: /health
+      # /health makes no database call, but src/server.js runs the migration
+      # before it listens, so the app only answers /health with a reachable
+      # database. These are dummy values and no database exists in this job.
+      smoke-env: |
+        DATABASE_URL=postgres://smoke:smoke-not-a-secret@smoke-test.invalid:5432/smoke
 
   terraform:
-    name: Validate Terraform
+    uses: abhiman-erla/ci-templates/.github/workflows/terraform-validate.yml@11abec65f0c86a0f95e32250f9656c4cbd628b1f # v1.2.0
+    permissions:
+      contents: read
+    with:
+      working-directory: infra/terraform
+      terraform-version: 1.9.8
+
+  ci-ok:
+    if: always()
+    needs: [secrets-scan, workflow-lint, node, docker, terraform]
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: infra/terraform
+    permissions: {}
     steps:
-      - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
+      - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # v1.3.0
         with:
-          terraform_version: 1.9.8
-      - run: terraform fmt -check -recursive
-      - run: terraform init -backend=false
-      - run: terraform validate
+          jobs: ${{ toJSON(needs) }}
