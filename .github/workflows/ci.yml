@@ -28,7 +28,7 @@ jobs:
       test-command: npm run test:coverage
 
   docker:
-    uses: abhiman-erla/ci-templates/.github/workflows/docker-build.yml@38dc8c6d2b578d7ad8ded1467c464118dc0e1dc1 # v1.3.0
+    uses: abhiman-erla/ci-templates/.github/workflows/docker-build.yml@590537b0bf92f11c36470b118c6e18410cce5d74 # v1.4.0
     permissions:
       contents: read
       packages: write
